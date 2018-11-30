@@ -12,7 +12,6 @@ public class DataTable {
 
     public DataTable(ResultSet resultSet) throws SQLException {
         parseTableSchema(resultSet);
-
     }
 
     private void parseTableSchema(ResultSet resultSet) throws SQLException {
@@ -20,10 +19,17 @@ public class DataTable {
         this.tableName = metaData.getTableName(0);
         this.schemaName = metaData.getSchemaName(0);
         this.catalogName = metaData.getCatalogName(0);
-        createColumns(metaData);
+        getTableData(metaData);
+        getColumns(metaData);
     }
 
-    private void createColumns(ResultSetMetaData metaData) throws SQLException{
+    private void getTableData(ResultSetMetaData metaData) throws SQLException {
+        this.tableName = metaData.getTableName(0);
+        this.schemaName = metaData.getSchemaName(0);
+        this.catalogName = metaData.getCatalogName(0);
+    }
+
+    private void getColumns(ResultSetMetaData metaData) throws SQLException {
         for(int i = 0; i < metaData.getColumnCount(); i++){
             TableColumn thisColumn = new TableColumn(metaData.getColumnClassName(i), metaData.getColumnDisplaySize(i), metaData.getColumnLabel(i), metaData.getColumnName(i), metaData.getColumnType(i), metaData.getColumnTypeName(i), metaData.getPrecision(i), metaData.getScale(i), metaData.isAutoIncrement(i), metaData.isCaseSensitive(i), metaData.isCurrency(i), metaData.isDefinitelyWritable(i), metaData.isNullable(i), metaData.isReadOnly(i), metaData.isSearchable(i), metaData.isSigned(i), metaData.isWritable(i));
             this.columns.add(thisColumn);
