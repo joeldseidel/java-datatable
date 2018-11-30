@@ -1,5 +1,7 @@
+package com.joelseidel.java_datatable;
+
 public class Field {
-    //Field data attributes
+    //com.joelseidel.javadatatable.Field data attributes
     private TableColumn column;
     private Object value;
 

@@ -1,3 +1,5 @@
+package com.joelseidel.java_datatable;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -30,7 +32,7 @@ public class DataTable {
      * Get a field by column and row index (direct address within table)
      * @param columnIndex 0 based index of the column
      * @param rowIndex 0 based index of the row
-     * @return Field object located at specified indices
+     * @return com.joelseidel.javadatatable.Field object located at specified indices
      * @throws IndexOutOfBoundsException thrown when attempting to access an index address that is outside of the table bounds
      */
     public Field getField(int columnIndex, int rowIndex) throws IndexOutOfBoundsException{
@@ -42,7 +44,7 @@ public class DataTable {
      * Get a field by column name and row index
      * @param columnName name of the column
      * @param rowIndex 0 based index of the row
-     * @return Field object located at the specified location
+     * @return com.joelseidel.javadatatable.Field object located at the specified location
      * @throws IndexOutOfBoundsException thrown when attempting to access an index address that is outside of the table bounds
      */
     public Field getField(String columnName, int rowIndex) throws IndexOutOfBoundsException{

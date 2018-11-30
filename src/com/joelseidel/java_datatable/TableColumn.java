@@ -1,3 +1,5 @@
+package com.joelseidel.java_datatable;
+
 class TableColumn {
     //Column data attributes
     private String className;
