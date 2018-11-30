@@ -6,6 +6,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Joel Seidel
+ *
+ * Data table object
+ * Allows for interacting with data from MySQL queries in a data table similar to the .NET datatable
+ */
+
 public class DataTable {
     //Table data attributes
     private String tableName;
@@ -21,11 +28,55 @@ public class DataTable {
      * @param resultSet result set to be converted into a datatable
      * @throws SQLException sql exception that may be thrown while converting
      */
-    DataTable(ResultSet resultSet) throws SQLException {
+    public DataTable(ResultSet resultSet) throws SQLException {
+        //Initialize the local column list
+        columns = new ArrayList<TableColumn>();
+        //Initialize the local row list
+        rows = new ArrayList<TableRow>();
         //Parse the table data from the result set
         parseTableSchema(resultSet);
         //Parse the data from rows of the result set
         parseRows(resultSet);
+    }
+
+    /**
+     * Constructor to create an empty data table with known table data
+     * @param tableName name of the table
+     * @param schemaName name of the table schema
+     * @param catalogName name of the table catalog
+     */
+    public DataTable(String tableName, String schemaName, String catalogName){
+        this.tableName = tableName;
+        this.schemaName = schemaName;
+        this.catalogName = catalogName;
+        //Initialize the local column list
+        columns = new ArrayList<TableColumn>();
+        //Initialize the local row list
+        rows = new ArrayList<TableRow>();
+    }
+
+    /**
+     * Constructor to create an empty data table with only the table name
+     * @param tableName name of the table
+     */
+    public DataTable(String tableName) {
+        this.tableName = tableName;
+        this.schemaName = "";
+        this.catalogName = "";
+        //Initialize the local column list
+        columns = new ArrayList<TableColumn>();
+        //Initialize the local row list
+        rows = new ArrayList<TableRow>();
+    }
+
+    /**
+     * Default constructor to create an empty data table
+     */
+    public DataTable() {
+        //Initialize the local column list
+        columns = new ArrayList<TableColumn>();
+        //Initialize the local row list
+        rows = new ArrayList<TableRow>();
     }
 
     /**
@@ -131,6 +182,39 @@ public class DataTable {
     }
 
     /**
+     * Import columns into the data table
+     * @param columns columns to import into the data table
+     */
+    public void importColumns(List<TableColumn> columns){
+        this.columns = columns;
+    }
+
+    /**
+     * Append columns onto the existing columns within the datatable
+     * @param columns columns to append onto the data table
+     */
+    public void appendColumns(List<TableColumn> columns){
+        this.columns.addAll(columns);
+    }
+
+    /**
+     * Add a column to the table
+     * @param column column added to the table
+     */
+    public void addColumn(TableColumn column){
+        this.columns.add(column);
+    }
+
+    /**
+     * Add a column to the table by column data type and name
+     * @param name column name
+     * @param dataType column data type class name
+     */
+    public void addColumn(String name, COLUMN_DATA_TYPE dataType){
+        this.columns.add(new TableColumn(dataType, name));
+    }
+
+    /**
      * Parse the result set from the result set meta data and create the list of columns
      * @param resultSet result set to parse
      * @throws SQLException thrown if result set is null or is not valid
@@ -150,8 +234,6 @@ public class DataTable {
      * @throws SQLException thrown if rows are invalid
      */
     private void parseRows(ResultSet resultSet) throws SQLException{
-        //Initialize the local row list
-        rows = new ArrayList<TableRow>();
         //Convert each result set record into a table row
         while(resultSet.next()){
             //Create a local table row
@@ -184,8 +266,6 @@ public class DataTable {
      * @throws SQLException thrown if meta data is invalid
      */
     private void getColumns(ResultSetMetaData metaData) throws SQLException {
-        //Initialize the local column list
-        columns = new ArrayList<TableColumn>();
         //Create a table column object within the column count of the meta data
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
             //Create a table column object using column data from the meta data
@@ -193,6 +273,24 @@ public class DataTable {
             //Add this column to the local column list
             this.columns.add(thisColumn);
         }
+    }
+
+    /**
+     * Get the column at the specified index
+     * @param index index of the column
+     * @return the column at the specified index
+     */
+    public TableColumn getColumn(int index){
+        return this.columns.get(index);
+    }
+
+    /**
+     * Get the column with the specified column name
+     * @param columnName the column with the column name
+     * @return the column with the specified column name
+     */
+    public TableColumn getColumn(String columnName){
+        return getColumn(getColumnIndexByName(columnName));
     }
 
     /**

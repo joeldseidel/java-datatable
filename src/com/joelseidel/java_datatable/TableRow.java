@@ -3,6 +3,12 @@ package com.joelseidel.java_datatable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Joel Seidel
+ *
+ * Table row object
+ */
+
 public class TableRow {
     //Table row data attributes
     private List<Field> fields;
