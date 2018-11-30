@@ -5,7 +5,7 @@ In the words of me many times:
 
 This library provides functionality for converting a ResultSet to an object which can be accessed and interacted with like a table. This functionality is similar to the DataTable object within the .NET framework System.Data library.
 
-##Using the DataTable
+## Using the DataTable
 
 **Note:** the row and column indices are 0 based
 
