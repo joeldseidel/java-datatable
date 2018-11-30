@@ -116,7 +116,7 @@ public class DataTable {
      * @param columnName name of the column
      * @return index of the column with the specified name
      */
-    private int getColumnIndexByName(String columnName){
+    public int getColumnIndexByName(String columnName){
         //Find the index of the column with name matching the specified column name
         for(int i = 0; i < columns.size(); i++){
             if(columns.get(i).getName().equals(columnName)){
