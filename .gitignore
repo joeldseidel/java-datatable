@@ -12,3 +12,4 @@ java-mysql-datatables.iml
 *.xml
 .idea/workspace.xml___jb_tmp___
 .idea/inspectionProfiles/Project_Default.xml
+src/libtester.java
