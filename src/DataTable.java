@@ -16,6 +16,51 @@ class DataTable {
         parseRows(resultSet);
     }
 
+    private Field getField(int columnIndex, int rowIndex) throws IndexOutOfBoundsException{
+        return rows.get(rowIndex).getField(columnIndex);
+    }
+
+    private Field getField(String columnName, int rowIndex) throws IndexOutOfBoundsException{
+        int columnIndex = getColumnIndexByName(columnName);
+        if(columnIndex == -1 ){
+            throw new IndexOutOfBoundsException();
+        }
+        return getField(columnIndex, rowIndex);
+    }
+
+    private Object getFieldValue(int columnIndex, int rowIndex) throws IndexOutOfBoundsException{
+        return rows.get(rowIndex).getField(columnIndex).getValue();
+    }
+
+    private Object getFieldValue(String columnName, int rowIndex) throws IndexOutOfBoundsException{
+        int columnIndex = getColumnIndexByName(columnName);
+        if(columnIndex == -1){
+            throw new IndexOutOfBoundsException();
+        }
+        return getFieldValue(columnIndex, rowIndex);
+    }
+
+    private TableRow getRow(int index){
+        return rows.get(index);
+    }
+
+    private List<TableRow> getRowRange(int lowerBound, int upperBound){
+        List<TableRow> rowsInRange = new ArrayList<TableRow>();
+        for(int i = lowerBound; i <= upperBound; i++){
+            rowsInRange.add(rows.get(i));
+        }
+        return rowsInRange;
+    }
+
+    private int getColumnIndexByName(String columnName){
+        for(int i = 0; i < columns.size(); i++){
+            if(columns.get(i).getName().equals(columnName)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private void parseTableSchema(ResultSet resultSet) throws SQLException {
         ResultSetMetaData metaData = resultSet.getMetaData();
         this.tableName = metaData.getTableName(1);
@@ -50,11 +95,19 @@ class DataTable {
         }
     }
 
-    private List<TableColumn> getColumns(){
+    public List<TableColumn> getColumns(){
         return this.columns;
     }
 
-    private List<TableRow> getRows(){
+    public int getColumnCount(){
+        return this.columns.size();
+    }
+
+    public List<TableRow> getRows(){
         return this.rows;
+    }
+
+    public int getRowCount(){
+        return this.rows.size();
     }
 }

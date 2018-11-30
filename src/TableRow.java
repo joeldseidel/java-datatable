@@ -14,4 +14,8 @@ public class TableRow {
     public List<Field> getFields(){
         return this.fields;
     }
+
+    public Field getField(int index){
+        return this.fields.get(index);
+    }
 }
