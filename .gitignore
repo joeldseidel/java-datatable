@@ -6,3 +6,4 @@ java-mysql-datatables.iml
 .idea/misc.xml
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/uiDesigner.xml
+*.class
