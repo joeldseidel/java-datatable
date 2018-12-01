@@ -83,7 +83,7 @@ public class DataTable {
      * Get a field by column and row index (direct address within table)
      * @param columnIndex 0 based index of the column
      * @param rowIndex 0 based index of the row
-     * @return com.joelseidel.javadatatable.Field object located at specified indices
+     * @return Field object located at specified indices
      * @throws IndexOutOfBoundsException thrown when attempting to access an index address that is outside of the table bounds
      */
     public Field getField(int columnIndex, int rowIndex) throws IndexOutOfBoundsException{
@@ -95,7 +95,7 @@ public class DataTable {
      * Get a field by column name and row index
      * @param columnName name of the column
      * @param rowIndex 0 based index of the row
-     * @return com.joelseidel.javadatatable.Field object located at the specified location
+     * @return Field object located at the specified location
      * @throws IndexOutOfBoundsException thrown when attempting to access an index address that is outside of the table bounds
      */
     public Field getField(String columnName, int rowIndex) throws IndexOutOfBoundsException{
@@ -215,6 +215,83 @@ public class DataTable {
     }
 
     /**
+     * Add a row to the table
+     * @param row row to add to the table
+     */
+    public void addRow(TableRow row){
+        this.rows.add(row);
+    }
+
+    /**
+     * Add a row to the table from a list of fields
+     * @param fields list of fields to create the row from
+     */
+    public void addRow(List<Field> fields) {
+        this.rows.add(new TableRow(fields));
+    }
+
+    /**
+     * Add the next row in a result set
+     * @param resultSet result to fetch row from
+     * @throws SQLException thrown if the result set is invalid
+     */
+    public void addRow(ResultSet resultSet) throws SQLException{
+        if(resultSet.next()){
+            this.rows.add(parseRow(resultSet));
+        }
+    }
+
+    /**
+     * Query builder for current table - this allows for creating a data table dynamically and then converting directly to a query
+     * @return sql string to insert the current rows in the table
+     */
+    public String mySqlInsertQueryStringBuilder(){
+        //String builder for the entire query string
+        StringBuilder insertQuerySqlBuilder = new StringBuilder();
+        //Create an insert query for each row in the table
+        for (TableRow row : rows){
+            //String builder for the columns clause
+            StringBuilder colSqlClauseBuilder = new StringBuilder("INSERT INTO " + tableName + " (");
+            //String builder for the values clause
+            StringBuilder valuesSqlClauseBuilder = new StringBuilder(") VALUES (");
+            //Add the column and value of each field in the row
+            for (Field field : row.getFields()){
+                //Get the value of the field
+                Object fieldValue = field.getValue();
+                //Add the column and value to the insert query if it is not null
+                if(fieldValue != null){
+                    //Get the column from the field
+                    TableColumn fieldColumn = field.getColumn();
+                    //Add the name of the column to the column clause of the query
+                    colSqlClauseBuilder.append(fieldColumn.getName());
+                    colSqlClauseBuilder.append(", ");
+                    String fieldString = "";
+                    //Add the ' to the field value if the field value is a string or date and requires it
+                    if(fieldColumn.getClassName().equals("java.lang.String") || fieldColumn.getClassName().equals("java.sql.Date")){
+                        //Field value is a string or date and requires the '
+                        fieldString = "'" + field.getValue().toString() + "'";
+                    } else {
+                        //Field value is numeric or something that doesn't require the '
+                        fieldString = field.getValue().toString();
+                    }
+                    //Add the string value of the field value to the value clause
+                    valuesSqlClauseBuilder.append(fieldString);
+                    valuesSqlClauseBuilder.append(", ");
+                }
+            }
+            //Remove the extra comma at the end of the clauses
+            String colSqlClause = colSqlClauseBuilder.toString().replaceAll(", $", "");
+            String valuesSqlClause = valuesSqlClauseBuilder.toString().replaceAll(", $", "");
+            //Combine the clauses and add the closing parenthesises
+            insertQuerySqlBuilder.append(colSqlClause);
+            insertQuerySqlBuilder.append(valuesSqlClause);
+            insertQuerySqlBuilder.append(");");
+        }
+        //Convert the query string builder to a string and return
+        return insertQuerySqlBuilder.toString();
+    }
+
+    /**
      * Parse the result set from the result set meta data and create the list of columns
      * @param resultSet result set to parse
      * @throws SQLException thrown if result set is null or is not valid
@@ -229,6 +306,23 @@ public class DataTable {
     }
 
     /**
+     * Parse the row from a result set that is being pointed to
+     * @param resultSet result set to parse the current row from
+     * @return the table row the result set row was converted into
+     * @throws SQLException thrown if the result set is invalid
+     */
+    private TableRow parseRow(ResultSet resultSet) throws SQLException{
+        //Create a local table row
+        TableRow thisRow = new TableRow();
+        //Create a field for each of the columns within this row
+        for (int i = 0; i < columns.size(); i++) {
+            //Add the field of the current column within the current row
+            thisRow.addField(columns.get(i), resultSet.getObject(i + 1));
+        }
+        return thisRow;
+    }
+
+    /**
      * Parse the rows from the result set into table rows
      * @param resultSet result set to parse
      * @throws SQLException thrown if rows are invalid
@@ -236,15 +330,8 @@ public class DataTable {
     private void parseRows(ResultSet resultSet) throws SQLException{
         //Convert each result set record into a table row
         while(resultSet.next()){
-            //Create a local table row
-            TableRow thisRow = new TableRow();
-            //Create a field for each of the columns within this row
-            for (int i = 0; i < columns.size(); i++) {
-                //Add the field of the current column within the current row
-                thisRow.addField(columns.get(i), resultSet.getObject(i + 1));
-            }
             //Add this row to the local row list
-            this.rows.add(thisRow);
+            this.rows.add(parseRow(resultSet));
         }
     }
 

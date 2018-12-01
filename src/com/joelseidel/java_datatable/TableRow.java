@@ -16,7 +16,15 @@ public class TableRow {
     /**
      * Default constructor to initialize the field array
      */
-    TableRow(){ fields = new ArrayList<Field>(); }
+    public TableRow(){ fields = new ArrayList<Field>(); }
+
+    /**
+     * Constructor to create table row from list of fields
+     * @param fields list of fields to add to row
+     */
+    public TableRow(List<Field> fields){
+        this.fields = fields;
+    }
 
     /**
      * Add a field object to this row
