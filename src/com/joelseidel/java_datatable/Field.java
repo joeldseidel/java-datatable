@@ -1,7 +1,11 @@
 package com.joelseidel.java_datatable;
 
+/**
+ * @author Joel Seidel
+ */
+
 public class Field {
-    //com.joelseidel.javadatatable.Field data attributes
+    //Field data attributes
     private TableColumn column;
     private Object value;
 

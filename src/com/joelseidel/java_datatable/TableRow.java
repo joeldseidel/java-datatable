@@ -3,6 +3,12 @@ package com.joelseidel.java_datatable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Joel Seidel
+ *
+ * Table row object
+ */
+
 public class TableRow {
     //Table row data attributes
     private List<Field> fields;
@@ -10,7 +16,15 @@ public class TableRow {
     /**
      * Default constructor to initialize the field array
      */
-    TableRow(){ fields = new ArrayList<Field>(); }
+    public TableRow(){ fields = new ArrayList<Field>(); }
+
+    /**
+     * Constructor to create table row from list of fields
+     * @param fields list of fields to add to row
+     */
+    public TableRow(List<Field> fields){
+        this.fields = fields;
+    }
 
     /**
      * Add a field object to this row

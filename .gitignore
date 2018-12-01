@@ -16,3 +16,4 @@ src/libtester.java
 META-INF/MANIFEST.MF
 out/artifacts/java_mysql_datatables_jar/java-mysql-datatables.jar
 out/production/java-mysql-datatables/META-INF/MANIFEST.MF
+src/lib_tester.java

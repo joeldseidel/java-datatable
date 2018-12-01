@@ -1,6 +1,10 @@
 package com.joelseidel.java_datatable;
 
-class TableColumn {
+/**
+ * @author Joel Seidel
+ */
+
+public class TableColumn {
     //Column data attributes
     private String className;
     private int displaySize;
@@ -40,7 +44,7 @@ class TableColumn {
      * @param isSigned are values signed numbers?
      * @param isWritable is it possible for a write on the column to succeed?
      */
-    TableColumn(String className, int displaysize, String label, String name, int type, String typeName, int precision, int scale, boolean isAutoIncrement, boolean isCaseSensitive, boolean isCurrency, boolean isDefinitelyWritable, int isNullable, boolean isReadOnly, boolean isSearchable, boolean isSigned, boolean isWritable){
+    public TableColumn(String className, int displaysize, String label, String name, int type, String typeName, int precision, int scale, boolean isAutoIncrement, boolean isCaseSensitive, boolean isCurrency, boolean isDefinitelyWritable, int isNullable, boolean isReadOnly, boolean isSearchable, boolean isSigned, boolean isWritable){
         //Set the arguments to local variables
         this.className = className;
         this.displaySize = displaysize;
@@ -59,6 +63,28 @@ class TableColumn {
         this.isSearchable = isSearchable;
         this.isSigned = isSigned;
         this.isWritable = isWritable;
+    }
+
+    /**
+     * Constructor to create the most default type of column
+     * @param dataType data type of the column
+     * @param name name of the column
+     */
+    public TableColumn(COLUMN_DATA_TYPE dataType, String name){
+        this.className = convertDataTypeToClassName(dataType);
+        this.name = name;
+    }
+
+    private String convertDataTypeToClassName(COLUMN_DATA_TYPE dataType){
+        switch(dataType){
+            case INTEGER:
+                return "java.lang.Integer";
+            case NUMERIC:
+                return "java.lang.Double";
+            case STRING:
+                return "java.lang.String";
+        }
+        return null;
     }
 
     /**
@@ -159,7 +185,7 @@ class TableColumn {
 
     /**
      * Get the nullability of values in the column
-     * @return nullabilit of the values in the column
+     * @return nullability of the values in the column
      */
     public int getIsNullable() {
         return isNullable;
